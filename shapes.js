@@ -2,32 +2,59 @@
 const fs = require("fs");
 const inq = require("inquirer");
 
+//Classes
 class Shape {
-  constructor(letters, colorText, colorShape) {
-    (this.letters = letters),
-      (this.colorText = colorText),
-      (this.colorShape = colorShape);
+  constructor() {
+    (this.letters = ""), (this.colorText = ""), (this.colorShape = "");
+  }
+  setLetters(letters) {
+    this.letters = letters;
+  }
+  setShapeColor(colorShape) {
+    this.colorShape = colorShape;
+  }
+  setTextColor(colorText) {
+    this.colorText = colorText;
   }
 }
 
 class Circle extends Shape {
-  constructor(letters, colorText, colorShape, shapeChoice) {
-    super(letters, colorText, colorShape), (shapeChoice = "Circle");
+  render() {
+    return `
+    <svg version="1.1"
+            width="300" height="200"
+            xmlns="http://www.w3.org/2000/svg">
+        <circle cx="150" cy="100" r="100" fill="${this.colorShape}" />
+        <text x="150" y="115" font-size="60" text-anchor="middle" fill="${this.colorText}">${this.letters}</text>
+        </svg>`;
   }
 }
 
 class Triangle extends Shape {
-  constructor(letters, colorText, colorShape, shapeChoice) {
-    super(letters, colorText, colorShape), (shapeChoice = "Triangle");
+  render() {
+    return `
+    <svg version="1.1"
+            width="300" height="200"
+            xmlns="http://www.w3.org/2000/svg">
+        <polygon points= "150,10 300,190 0,190" fill="${colorShape}" />
+        <text x="150" y="140" font-size="60" text-anchor="middle" fill="${colorText}">${letters}</text>
+        </svg>`;
   }
 }
 
 class Square extends Shape {
-  constructor(letters, colorText, colorShape, shapeChoice) {
-    super(letters, colorText, colorShape), (shapeChoice = "Square");
+  render() {
+    return `
+        <svg version="1.1"
+                width="200" height="200"
+                xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="${colorShape}" />
+            <text x="100" y="120" font-size="60" text-anchor="middle" fill="${colorText}">${letters}</text>
+            </svg>`;
   }
 }
 
+//Logic
 inq
   .prompt([
     {
@@ -53,47 +80,59 @@ inq
     },
   ])
   .then((response) => {
-    render(response);
+    rend(response);
   });
 
 // Functions
-function render(response) {
+function rend(response) {
   if (response.shapeChoice == "Circle") {
+    const circ = new Circle();
+    circ.setLetters(response.letters);
+    circ.setShapeColor(response.colorShape);
+    circ.setTextColor(response.colorText);
     fs.writeFile(
       `${response.letters}-logo.svg`,
-      `
-<svg version="1.1"
-        width="300" height="200"
-        xmlns="http://www.w3.org/2000/svg">
-    <circle cx="150" cy="100" r="100" fill="${response.colorShape}" />
-    <text x="150" y="115" font-size="60" text-anchor="middle" fill="${response.colorText}">${response.letters}</text>
-    </svg>`,
+      
+      `<svg version="1.1"
+width="300" height="200"
+xmlns="http://www.w3.org/2000/svg">
+<circle cx="150" cy="100" r="100" fill="${response.colorShape}" />
+<text x="150" y="115" font-size="60" text-anchor="middle" fill="${response.colorText}">${response.letters}</text>
+</svg>`,
 
       (err) => (err ? console.error(err) : console.log("Generated logo.svg"))
     );
   } else if (response.shapeChoice == "Triangle") {
+    const tri = new Triangle();
+    tri.setLetters(response.letters);
+    tri.setShapeColor(response.colorShape);
+    tri.setTextColor(response.colorText);
     fs.writeFile(
       `${response.letters}-logo.svg`,
-      `
-    <svg version="1.1"
-            width="300" height="200"
-            xmlns="http://www.w3.org/2000/svg">
-        <polygon points= "150,10 300,190 0,190" fill="${response.colorShape}" />
-        <text x="150" y="140" font-size="60" text-anchor="middle" fill="${response.colorText}">${response.letters}</text>
-        </svg>`,
+      
+      `<svg version="1.1"
+width="300" height="200"
+xmlns="http://www.w3.org/2000/svg">
+<polygon points= "150,10 300,190 0,190" fill="${response.colorShape}" />
+<text x="150" y="140" font-size="60" text-anchor="middle" fill="${response.colorText}">${response.letters}</text>
+</svg>`,
 
       (err) => (err ? console.error(err) : console.log("Generated logo.svg"))
     );
-  } else if ((response.shapeChoice == "Square")) {
+  } else if (response.shapeChoice == "Square") {
+    const squ = new Square();
+    squ.setLetters(response.letters);
+    squ.setShapeColor(response.colorShape);
+    squ.setTextColor(response.colorText);
     fs.writeFile(
       `${response.letters}-logo.svg`,
-      `
-        <svg version="1.1"
-                width="200" height="200"
-                xmlns="http://www.w3.org/2000/svg">
-            <rect width="100%" height="100%" fill="${response.colorShape}" />
-            <text x="100" y="120" font-size="60" text-anchor="middle" fill="${response.colorText}">${response.letters}</text>
-            </svg>`,
+      
+      `<svg version="1.1"
+width="200" height="200"
+xmlns="http://www.w3.org/2000/svg">
+<rect width="100%" height="100%" fill="${response.colorShape}" />
+<text x="100" y="120" font-size="60" text-anchor="middle" fill="${response.colorText}">${response.letters}</text>
+</svg>`,
 
       (err) => (err ? console.error(err) : console.log("Generated logo.svg"))
     );
@@ -101,5 +140,6 @@ function render(response) {
     console.log("Please select a valid shape");
   }
 }
-module.exports = render;
-module.exports = Circle, Triangle, Square;
+
+// Exports
+module.exports = { Shape, Circle, Triangle, Square };
