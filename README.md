@@ -3,7 +3,7 @@
 ## Description
 https://github.com/KylerG12/Logo-Generator
 
-
+This app allows you to make SVG logos using a prompt to input the shape, colors, and characters.
 
 ## Installation
 
